@@ -40,10 +40,10 @@ class _VipSheetState extends State<VipSheet> {
   bool visible = false;
 
   void showInfo(String title) {
-    if (!isClosed) {
-      isClosed = true;
-      context.pop();
-    }
+    // if (!isClosed) {
+    //   isClosed = true;
+    //   context.pop();
+    // }
     DialogWidget.show(context, title: title);
     context.read<VipBloc>().add(CheckVip(identifier: widget.identifier));
   }
@@ -61,43 +61,45 @@ class _VipSheetState extends State<VipSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: visible ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 1000),
-      curve: Curves.easeInOut,
-      child: BlocConsumer<VipBloc, Vip>(
-        listener: (context, state) {
-          // if (state.offering == null) {
-          //   showInfo('Offering is null');
-          // }
-        },
-        builder: (context, state) {
-          if (state.loading || state.offering == null) {
-            return const SizedBox();
-          }
+    return Scaffold(
+      body: AnimatedOpacity(
+        opacity: visible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeInOut,
+        child: BlocConsumer<VipBloc, Vip>(
+          listener: (context, state) {
+            // if (state.offering == null) {
+            //   showInfo('Offering is null');
+            // }
+          },
+          builder: (context, state) {
+            if (state.loading || state.offering == null) {
+              return const SizedBox();
+            }
 
-          return PaywallView(
-            offering: state.offering,
-            onDismiss: () {
-              context.pop();
-            },
-            onPurchaseCompleted: (customerInfo, storeTransaction) {
-              showInfo('Purchase Completed');
-            },
-            onPurchaseCancelled: () {
-              showInfo('Purchase Cancelled');
-            },
-            onPurchaseError: (e) {
-              showInfo('Purchase Error');
-            },
-            onRestoreCompleted: (customerInfo) {
-              showInfo('Restore Completed');
-            },
-            onRestoreError: (e) {
-              showInfo('Restore Error');
-            },
-          );
-        },
+            return PaywallView(
+              offering: state.offering,
+              onDismiss: () {
+                context.pop();
+              },
+              onPurchaseCompleted: (customerInfo, storeTransaction) {
+                showInfo('Purchase Completed');
+              },
+              onPurchaseCancelled: () {
+                showInfo('Purchase Cancelled');
+              },
+              onPurchaseError: (e) {
+                showInfo('Purchase Error');
+              },
+              onRestoreCompleted: (customerInfo) {
+                showInfo('Restore Completed');
+              },
+              onRestoreError: (e) {
+                showInfo('Restore Error');
+              },
+            );
+          },
+        ),
       ),
     );
   }
